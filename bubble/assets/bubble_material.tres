@@ -6,4 +6,4 @@
 shader = ExtResource( 1 )
 shader_param/on = true
 shader_param/speed = 5.0
-shader_param/magnitude = 100.0
+shader_param/magnitude = 1.1
