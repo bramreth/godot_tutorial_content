@@ -64,7 +64,9 @@ func reset():
 	color.a = 1
 	for child in get_children():
 		if child.name != "Camera2D":
-			remove_child(child)
+			child.queue_free()
+	shard_velocity_map = {}
+	
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
