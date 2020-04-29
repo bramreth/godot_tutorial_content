@@ -1,6 +1,4 @@
-[gd_scene load_steps=8 format=2]
-
-[ext_resource path="res://lazer_v2.gd" type="Script" id=1]
+[gd_scene load_steps=9 format=2]
 
 [sub_resource type="Shader" id=1]
 code = "shader_type canvas_item;
@@ -48,42 +46,44 @@ shader_param/funk = 3
 seamless = true
 noise = SubResource( 3 )
 
-[sub_resource type="Animation" id=5]
-resource_name = "beam"
-tracks/0/type = "value"
-tracks/0/path = NodePath(".:material:shader_param/intensity")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/keys = {
-"times": PoolRealArray( 0, 0.2 ),
-"transitions": PoolRealArray( 0.659754, 1 ),
-"update": 0,
-"values": [ 0.0, 0.8 ]
-}
+[sub_resource type="Gradient" id=7]
+offsets = PoolRealArray( 0.350427, 1 )
+colors = PoolColorArray( 1, 1, 1, 1, 0, 0, 0, 0 )
 
-[sub_resource type="Animation" id=6]
-length = 0.8
-tracks/0/type = "value"
-tracks/0/path = NodePath(".:material:shader_param/intensity")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/keys = {
-"times": PoolRealArray( 0, 0.2, 0.8 ),
-"transitions": PoolRealArray( 0.203063, 0.732042, 1 ),
-"update": 0,
-"values": [ 0.0, 1.0, 0.0 ]
-}
+[sub_resource type="GradientTexture" id=8]
+gradient = SubResource( 7 )
+
+[sub_resource type="ParticlesMaterial" id=9]
+flag_disable_z = true
+direction = Vector3( -1, 0, 0 )
+spread = 90.0
+gravity = Vector3( 0, 98, 0 )
+initial_velocity = 15000.0
+initial_velocity_random = 1.0
+angular_velocity = 250.0
+angular_velocity_random = 1.0
+orbit_velocity = 0.0
+orbit_velocity_random = 0.0
+angle = 25.0
+angle_random = 1.0
+scale = 350.0
+color_ramp = SubResource( 8 )
+
+[sub_resource type="MeshTexture" id=10]
 
 [node name="lazor" type="Polygon2D"]
 material = SubResource( 2 )
+offset = Vector2( 0, -256 )
 texture = SubResource( 4 )
-polygon = PoolVector2Array( 0, 0, 0, 512, 2000, 512, 2000, 0 )
-script = ExtResource( 1 )
+texture_offset = Vector2( 0, 256 )
+polygon = PoolVector2Array( 0, 0, 0, 512, 8000, 512, 8000, 0 )
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
-anims/beam = SubResource( 5 )
-anims/blast = SubResource( 6 )
+[node name="Particles2D" type="Particles2D" parent="."]
+position = Vector2( 8000, 0 )
+amount = 32
+lifetime = 0.5
+local_coords = false
+process_material = SubResource( 9 )
+texture = SubResource( 10 )
+
+[node name="Light2D" type="Light2D" parent="."]

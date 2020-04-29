@@ -1,0 +1,80 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://juicy_camera.tscn" type="PackedScene" id=1]
+[ext_resource path="res://turret.gd" type="Script" id=2]
+[ext_resource path="res://lazor.tscn" type="PackedScene" id=3]
+
+[sub_resource type="Animation" id=5]
+resource_name = "blast"
+length = 0.1
+tracks/0/type = "value"
+tracks/0/path = NodePath("lazor:material:shader_param/intensity")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ 0.0, 1.0 ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("turret_head:offset")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( 0, -128 ), Vector2( 0, 0 ) ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("lazor/Particles2D:emitting")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 0.1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ false, true ]
+}
+
+[sub_resource type="RectangleShape2D" id=6]
+extents = Vector2( 384, 384 )
+
+[node name="Node2D" type="KinematicBody2D"]
+script = ExtResource( 2 )
+
+[node name="body" type="Polygon2D" parent="."]
+color = Color( 0, 0, 0, 1 )
+polygon = PoolVector2Array( -384, -384, -384, 384, 384, 384, 384, -384 )
+
+[node name="Position2D" type="Position2D" parent="body"]
+
+[node name="lazor" parent="body/Position2D" instance=ExtResource( 3 )]
+
+[node name="turret_head" type="Polygon2D" parent="body/Position2D"]
+rotation = 1.5708
+color = Color( 0, 0, 0, 1 )
+polygon = PoolVector2Array( -256, -384, -320, -320, -320, -256, -256, -192, -256, -128, -384, -64, -448, 128, -384, 320, -256, 384, -0.867493, 384, 256, 384, 384, 320, 448, 128, 384, -64, 256, -128, 256, -192, 320, -256, 320, -320, 256, -384 )
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="body/Position2D"]
+anims/blast = SubResource( 5 )
+
+[node name="RayCast2D" type="RayCast2D" parent="body/Position2D"]
+enabled = true
+cast_to = Vector2( 8000, 0 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource( 6 )
+
+[node name="Camera2D" parent="." instance=ExtResource( 1 )]
+offset = Vector2( 0, 0 )
+zoom = Vector2( 6.5, 6.5 )
+
+[editable path="body/Position2D/lazor"]
