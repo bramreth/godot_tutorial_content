@@ -1,0 +1,67 @@
+[gd_scene load_steps=7 format=2]
+
+[sub_resource type="Shader" id=1]
+code = "shader_type canvas_item;
+
+uniform float intensity = 0.5f;
+
+void fragment(){
+	
+	// load in our noise
+	vec4 bg = texture(TEXTURE, UV + TIME/2f);
+	COLOR.r = (0.5f - distance(vec2(0, UV.y), vec2(0, 0.5)));
+	COLOR.r = clamp(COLOR.r * bg.r * intensity * 10f, 0f, 1f);
+	COLOR.r = floor(COLOR.r *5f) /5f;
+	COLOR.a = float(COLOR.r > 0f);
+	COLOR.g = float(COLOR.r >= 1f);
+	COLOR.b = COLOR.r;
+}"
+
+[sub_resource type="ShaderMaterial" id=2]
+shader = SubResource( 1 )
+shader_param/intensity = 0.8
+
+[sub_resource type="OpenSimplexNoise" id=3]
+
+[sub_resource type="NoiseTexture" id=4]
+seamless = true
+noise = SubResource( 3 )
+
+[sub_resource type="Animation" id=5]
+resource_name = "beam"
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:material:shader_param/intensity")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.2 ),
+"transitions": PoolRealArray( 0.659754, 1 ),
+"update": 0,
+"values": [ 0.0, 0.8 ]
+}
+
+[sub_resource type="Animation" id=6]
+length = 0.8
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:material:shader_param/intensity")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.2, 0.8 ),
+"transitions": PoolRealArray( 0.203063, 0.732042, 1 ),
+"update": 0,
+"values": [ 0.0, 1.0, 0.0 ]
+}
+
+[node name="lazor" type="Polygon2D"]
+material = SubResource( 2 )
+texture = SubResource( 4 )
+polygon = PoolVector2Array( 0, 0, 0, 512, 2000, 512, 2000, 0 )
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+anims/beam = SubResource( 5 )
+anims/blast = SubResource( 6 )
