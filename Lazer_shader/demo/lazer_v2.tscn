@@ -1,6 +1,7 @@
 [gd_scene load_steps=8 format=2]
 
-[ext_resource path="res://lazer_v2.gd" type="Script" id=1]
+[ext_resource path="res://demo/lazer_v2.gd" type="Script" id=1]
+
 
 [sub_resource type="Shader" id=1]
 code = "shader_type canvas_item;

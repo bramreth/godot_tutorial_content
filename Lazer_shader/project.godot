@@ -16,7 +16,7 @@ _global_script_class_icons={
 [application]
 
 config/name="Lazer_shader"
-run/main_scene="res://turret.tscn"
+run/main_scene="res://demo/turret.tscn"
 config/icon="res://icon.png"
 
 [rendering]

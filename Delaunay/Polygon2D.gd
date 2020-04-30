@@ -1,7 +1,7 @@
 extends Polygon2D
 
 export var rand_color = true
-export var shard_count = 32
+var shard_count = 32
 var shard_velocity_map = {}
 
 # Called when the node enters the scene tree for the first time.
@@ -11,21 +11,15 @@ func _ready():
 func explode():
 	#this will let us add more points to our polygon later on
 	var points = polygon
-	
 	for i in range(shard_count):
-		points.append(Vector2(randi() % 128, randi() % 128))
+		points.append(Vector2(randi()%128, randi()%128))
+	
 	
 	var delaunay_points = Geometry.triangulate_delaunay_2d(points)
 	
-	print(delaunay_points)
-	
 	if not delaunay_points:
 		print("serious error occurred no delaunay points found")
-		
-	#let's cool our list of triangles shard pool
 	
-
-		
 	#loop over each returned triangle
 	for index in len(delaunay_points) / 3:
 		var shard_pool = PoolVector2Array()
