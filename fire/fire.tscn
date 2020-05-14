@@ -51,39 +51,32 @@ noise = SubResource( 4 )
 shader = SubResource( 3 )
 shader_param/noise = SubResource( 5 )
 
-[sub_resource type="Shader" id=7]
+[sub_resource type="Shader" id=12]
 code = "shader_type canvas_item;
+
 uniform sampler2D noise;
 
 void fragment(){
-	vec2 fire_motion = UV * 1.33;
-	fire_motion.y += TIME;
-	vec4 c = texture(TEXTURE, UV);
-	vec4 n = texture(noise, fire_motion);
-	n.r = clamp(n.r, 0f, 0.65);
-//	n.r = 0.65f; //this shows how the texture looks naked
-	c.r += 0.4f - distance(vec2(0.5,UV.y), UV);
-	c.r = (c.r*0.3) + (n.r* 0.4);
-//	c.r = floor(c.r * 4f) / 4f;
-	c.r = clamp(c.r, 0.4, 0.99);
-	
-//	COLOR = vec4(c.r,c.r,c.r,1f);
-	COLOR = vec4(float(c.r > 0.4), float(c.r > 0.5), float(c.r > 0.6), float(c.r > 0.4));
-	
+	vec4 base = texture(TEXTURE, UV);
+	vec4 n = texture(noise, vec2(UV.x, UV.y + TIME));
+	base.r += 0.4f - distance(vec2(0.5,UV.y), UV);
+	base.r = (base.r * 0.3) + (n.r * 0.4);
+	COLOR = vec4(float(base.r > 0.4), float(base.r > 0.5), float(base.r > 0.6), float(base.r > 0.4));
 }"
 
-[sub_resource type="OpenSimplexNoise" id=8]
-seed = 1
+[sub_resource type="OpenSimplexNoise" id=13]
+seed = 3
 period = 256.0
 lacunarity = 0.1
 
-[sub_resource type="NoiseTexture" id=9]
+[sub_resource type="NoiseTexture" id=14]
 seamless = true
-noise = SubResource( 8 )
+noise = SubResource( 13 )
 
-[sub_resource type="ShaderMaterial" id=10]
-shader = SubResource( 7 )
-shader_param/noise = SubResource( 9 )
+[sub_resource type="ShaderMaterial" id=15]
+resource_local_to_scene = true
+shader = SubResource( 12 )
+shader_param/noise = SubResource( 14 )
 
 [sub_resource type="Environment" id=11]
 background_mode = 4
@@ -152,7 +145,7 @@ process_material = SubResource( 1 )
 texture = SubResource( 2 )
 
 [node name="toon_fire" type="Sprite" parent="."]
-material = SubResource( 10 )
+material = SubResource( 15 )
 position = Vector2( 552, 448 )
 texture = ExtResource( 1 )
 script = ExtResource( 3 )
