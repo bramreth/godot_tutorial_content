@@ -1,0 +1,27 @@
+[gd_resource type="ShaderMaterial" load_steps=4 format=2]
+
+[sub_resource type="Shader" id=5]
+code = "shader_type canvas_item;
+uniform sampler2D noise;
+
+void fragment(){
+	vec4 c = texture(TEXTURE, UV);
+	vec4 n = texture(noise, vec2(UV.x, UV.y + TIME));
+	n.r = clamp(n.r, 0f, 0.65);
+//	n.r = 0.65f; //this shows how the texture looks naked
+	c.r += 0.4f - distance(vec2(0.5,UV.y), UV);
+	c.r = (c.r*0.3) + (n.r* 0.4);
+	COLOR = vec4(float(c.r > 0.4), float(c.r > 0.5), float(c.r > 0.6), float(c.r > 0.4));
+	
+}"
+
+[sub_resource type="OpenSimplexNoise" id=4]
+lacunarity = 0.1
+
+[sub_resource type="NoiseTexture" id=3]
+seamless = true
+noise = SubResource( 4 )
+
+[resource]
+shader = SubResource( 5 )
+shader_param/noise = SubResource( 3 )
