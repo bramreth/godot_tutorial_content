@@ -13,7 +13,7 @@ uniform float intensity: hint_range(0f, 1f);
 
 void fragment(){
 	COLOR.rgb = textureLod(SCREEN_TEXTURE, SCREEN_UV,
-		6f * intensity * (distance(target, UV)/sqrt(2))).rgb;
+		6f).rgb;
 }"
 
 [sub_resource type="ShaderMaterial" id=2]
@@ -49,9 +49,10 @@ shader_param/color = null
 
 [node name="Node2D" type="Node2D"]
 script = ExtResource( 4 )
-path = NodePath("CanvasLayer/wipe")
+path = NodePath("CanvasLayer/blur")
 
 [node name="bg" parent="." instance=ExtResource( 1 )]
+rotation = 0.197933
 
 [node name="Camera2D" type="Camera2D" parent="bg"]
 position = Vector2( 0, 145.302 )
@@ -59,6 +60,7 @@ current = true
 zoom = Vector2( 1.9, 1.9 )
 
 [node name="icon" parent="." instance=ExtResource( 2 )]
+scale = Vector2( 2, 2 )
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
@@ -72,7 +74,6 @@ __meta__ = {
 }
 
 [node name="blur" type="ColorRect" parent="CanvasLayer"]
-visible = false
 material = SubResource( 2 )
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -81,6 +82,7 @@ __meta__ = {
 }
 
 [node name="wipe" type="ColorRect" parent="CanvasLayer"]
+visible = false
 material = SubResource( 4 )
 anchor_right = 1.0
 anchor_bottom = 1.0

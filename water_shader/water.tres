@@ -1,0 +1,24 @@
+[gd_resource type="ShaderMaterial" load_steps=3 format=2]
+
+[ext_resource path="res://assets/normal.jpg" type="Texture" id=1]
+
+[sub_resource type="Shader" id=1]
+code = "shader_type canvas_item;
+
+uniform sampler2D normal;
+uniform vec4 c: hint_color;
+
+void fragment(){
+	vec4 t = texture(TEXTURE, UV);
+	vec4 n = texture(normal, UV );
+	vec2 suv = SCREEN_UV;
+	suv.y = 0.5f - SCREEN_UV.y;
+	suv *= (0.9f + n.r*n.g/15f);
+	vec4 s = textureLod(SCREEN_TEXTURE, suv, 0.25f);
+	COLOR = mix(t.r * s, c * t.r, 0.25);
+}"
+
+[resource]
+shader = SubResource( 1 )
+shader_param/c = Color( 0.752941, 0.960784, 1, 1 )
+shader_param/normal = ExtResource( 1 )
