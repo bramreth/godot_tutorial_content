@@ -1,0 +1,20 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://icon.png" type="Texture" id=1]
+[ext_resource path="res://icon.gd" type="Script" id=2]
+[ext_resource path="res://CurveTween/CurveTween.gd" type="Script" id=3]
+
+[sub_resource type="Curve" id=1]
+_data = [ Vector2( 0, 0 ), 0.0, 1.0, 0, 1, Vector2( 1, 1 ), -1.58945, 0.0, 0, 0 ]
+
+[node name="Node2D" type="Node2D"]
+
+[node name="icon" type="Sprite" parent="."]
+position = Vector2( 404, 309 )
+texture = ExtResource( 1 )
+script = ExtResource( 2 )
+
+[node name="CurveTween" type="Tween" parent="icon"]
+script = ExtResource( 3 )
+curve = SubResource( 1 )
+[connection signal="curve_tween" from="icon/CurveTween" to="icon" method="_on_CurveTween_curve_tween"]
