@@ -1,0 +1,18 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://curves/overshoot.tres" type="Curve" id=1]
+[ext_resource path="res://icon.png" type="Texture" id=2]
+[ext_resource path="res://example.gd" type="Script" id=3]
+[ext_resource path="res://CurveTween/CurveTween.gd" type="Script" id=4]
+
+[node name="example" type="Node2D"]
+
+[node name="icon" type="Sprite" parent="."]
+position = Vector2( 489.401, 274.954 )
+texture = ExtResource( 2 )
+script = ExtResource( 3 )
+
+[node name="CurveTween" type="Tween" parent="icon"]
+script = ExtResource( 4 )
+curve = ExtResource( 1 )
+[connection signal="curve_tween" from="icon/CurveTween" to="icon" method="_on_CurveTween_curve_tween"]
