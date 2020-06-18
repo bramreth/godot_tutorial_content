@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=2]
 
-[ext_resource path="res://icon.png" type="Texture" id=1]
+[ext_resource path="res://simple_rain.gd" type="Script" id=2]
 
 [sub_resource type="Shader" id=1]
 code = "shader_type particles;
@@ -37,6 +37,11 @@ uniform vec4 color_value : hint_color;
 uniform int trail_divisor;
 uniform vec3 gravity;
 
+//brams vars
+uniform sampler2D collision_bound;
+uniform float xdim;
+uniform float ydim;
+
 
 float rand_from_seed(inout uint seed) {
 	int k;
@@ -60,6 +65,34 @@ uint hash(uint x) {
 	x = ((x >> uint(16)) ^ x) * uint(73244475);
 	x = (x >> uint(16)) ^ x;
 	return x;
+}
+
+float pixel_is_solid(vec2 pos){
+	vec2 newpos = pos;
+	newpos.x /= xdim;
+	newpos.y /= ydim;
+	if(pos.x > xdim || pos.x < 0f){
+		return 0f;
+	}
+	return float(textureLod(collision_bound, newpos, 0f).r > 0f);
+//	return float(textureLod(collision_bound, pos/80000f, 2f).r > 0f);
+}
+
+
+vec2 collision_normal(vec2 pos){
+	float sample = 5f;
+	vec2 avg = vec2(0f);
+	for(float i = -sample; i < sample; i+= 1f){
+		for(float j = -sample; j < sample; j+= 1f){
+			avg -= vec2(i,j)*(pixel_is_solid(vec2(pos.x+i, pos.y+j)));
+		}
+	}
+	if(avg.x == 0f && avg.y == 0f){
+		avg = vec2(0f);
+	}else{
+		avg = normalize(avg);
+	}
+	return avg;
 }
 
 void vertex() {
@@ -144,15 +177,36 @@ void vertex() {
 		CUSTOM.x = base_angle * degree_to_rad;
 		CUSTOM.z = (anim_offset + tex_anim_offset) * mix(1.0, anim_offset_rand, anim_offset_random) + CUSTOM.y * (anim_speed + tex_anim_speed) * mix(1.0, rand_from_seed(alt_seed), anim_speed_random);
 	}
-	float scale_mod = 1f;
-	if(TRANSFORM[3].y >= 600f){
+	// brammarker
+//	float scale_mod = 1f;
+//	if(TRANSFORM[3].y >= 600f){
+//		VELOCITY.y *= -0.25f;
+//		VELOCITY.x *= 0.5f;
+//		if(abs(VELOCITY.y) < 0.05){
+//			scale_mod = 0.2;
+//		}
+//	}
+	if(pixel_is_solid(TRANSFORM[3].xy) > 0f){
 		VELOCITY.y *= -0.25f;
 		VELOCITY.x *= 0.5f;
-		if(abs(VELOCITY.y) < 0.05){
-			scale_mod = 0.2;
-		}
-		
 	}
+//test start
+//	float collision = pixel_is_solid(TRANSFORM[3].xy);
+//	if(!RESTART && collision > 0.01){
+//		vec2 normal = collision_normal(TRANSFORM[3].xy);
+//		if(normal.x == 0f && normal.y == 0f){
+//			VELOCITY.xy = max(VELOCITY.xy * 0.9, vec2(0.0));
+//		}else{
+//			VELOCITY += normalize(vec3(angle_rand-0.5, angle_rand - 0.5,0f))*initial_linear_velocity_random;
+//			float projection = VELOCITY.x * normal.x + VELOCITY.y + normal.y;
+//			VELOCITY.xy -= 2f*(normal * projection).xy;
+//			VELOCITY.xy = normalize(VELOCITY.xy)*initial_linear_velocity;
+//			TRANSFORM[3].xy += normal;
+//		}
+//	}
+	//test end
+
+
 	float tex_scale = 1.0;
 	float tex_hue_variation = 0.0;
 	float hue_rot_angle = (hue_variation + tex_hue_variation) * pi * 2.0 * mix(1.0, hue_rot_rand * 2.0 - 1.0, hue_variation_random);
@@ -175,7 +229,7 @@ void vertex() {
 	TRANSFORM[0] = vec4(cos(CUSTOM.x), -sin(CUSTOM.x), 0.0, 0.0);
 	TRANSFORM[1] = vec4(sin(CUSTOM.x), cos(CUSTOM.x), 0.0, 0.0);
 	TRANSFORM[2] = vec4(0.0, 0.0, 1.0, 0.0);
-	float base_scale = tex_scale * mix(scale*scale_mod, 1.0, scale_random * scale_rand);
+	float base_scale = tex_scale * mix(scale, 1.0, scale_random * scale_rand);
 	if (base_scale < 0.000001) {
 		base_scale = 0.000001;
 	}
@@ -220,19 +274,17 @@ shader_param/hue_variation_random = 0.0
 shader_param/anim_speed_random = 0.0
 shader_param/anim_offset_random = 0.0
 shader_param/lifetime_randomness = 0.0
-shader_param/emission_box_extents = Vector3( 4096, 1, 1 )
+shader_param/emission_box_extents = Vector3( 512, 1, 1 )
 shader_param/color_value = Color( 0.466667, 0.811765, 1, 1 )
 shader_param/trail_divisor = 1
 shader_param/gravity = Vector3( 0, 980, 0 )
+shader_param/xdim = null
+shader_param/ydim = null
 
 [node name="Node2D" type="Node2D"]
+script = ExtResource( 2 )
 
-[node name="icon" type="Sprite" parent="."]
-position = Vector2( 5.81134, 371.094 )
-texture = ExtResource( 1 )
-
-[node name="Particles2D" type="Particles2D" parent="icon"]
-position = Vector2( 0, -600 )
+[node name="Particles2D" type="Particles2D" parent="."]
 amount = 128
 lifetime = 2.5
 visibility_rect = Rect2( -100, -100, 2000, 2000 )
