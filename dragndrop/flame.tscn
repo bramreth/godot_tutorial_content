@@ -1,0 +1,25 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://assets/flame.png" type="Texture" id=1]
+
+[sub_resource type="ShaderMaterial" id=1]
+
+[sub_resource type="Shader" id=2]
+code = "shader_type canvas_item;
+
+void vertex(){
+	VERTEX.x *= sin(7f*TIME + (1f-VERTEX.y)*12f);
+}"
+
+[sub_resource type="ShaderMaterial" id=3]
+shader = SubResource( 2 )
+
+[node name="Node2D" type="Node2D"]
+material = SubResource( 1 )
+
+[node name="flame" type="Sprite" parent="."]
+material = SubResource( 3 )
+position = Vector2( -0.538589, -33.9832 )
+texture = ExtResource( 1 )
+region_enabled = true
+region_rect = Rect2( 554.737, 365, 81.0526, 96.8421 )

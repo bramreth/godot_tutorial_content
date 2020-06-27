@@ -17,7 +17,7 @@ func _ready():
 			else:
 				dat.append(0)
 	gen_texture = create_im(max_x, max_y, dat)
-	$Node2D.set_bound(gen_texture, max_x, max_y)
+	$Node2D.set_bound(gen_texture, max_x, max_y, global_position)
 	print(max_y)
 
 func create_im(x,y, data):

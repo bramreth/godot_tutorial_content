@@ -1,0 +1,191 @@
+[gd_scene load_steps=13 format=2]
+
+[ext_resource path="res://assets/Untitled_Artwork-1.png" type="Texture" id=1]
+[ext_resource path="res://assets/Untitled_Artwork-6.png" type="Texture" id=2]
+[ext_resource path="res://assets/Untitled_Artwork-4.png" type="Texture" id=3]
+[ext_resource path="res://assets/Untitled_Artwork-2.png" type="Texture" id=4]
+[ext_resource path="res://assets/Untitled_Artwork-3.png" type="Texture" id=5]
+[ext_resource path="res://assets/Untitled_Artwork-5.png" type="Texture" id=6]
+[ext_resource path="res://drop_zone.tscn" type="PackedScene" id=7]
+[ext_resource path="res://candle.tscn" type="PackedScene" id=8]
+[ext_resource path="res://bg.gd" type="Script" id=9]
+
+[sub_resource type="Shader" id=1]
+code = "shader_type canvas_item;
+
+uniform sampler2D mask;
+
+void fragment(){
+	float t = TIME * 5f;
+	vec2 uv = UV;
+	vec2 offs_uv = vec2(0f);
+	vec4 m = texture(mask, UV);
+	if(m.a > 0f){
+		offs_uv.y = sin(t) * 0.003 * abs(uv.x);
+		offs_uv.x = cos(t) * abs(uv.y) * 0.003;
+	}
+	vec4 tex = texture(TEXTURE, uv + offs_uv);
+	COLOR = tex;
+}
+
+void vertex(){
+	VERTEX.y += sin(TIME)*3f;
+}"
+
+[sub_resource type="ShaderMaterial" id=2]
+shader = SubResource( 1 )
+shader_param/mask = ExtResource( 6 )
+
+[sub_resource type="Animation" id=3]
+resource_name = "topple"
+length = 1.2
+tracks/0/type = "value"
+tracks/0/path = NodePath("arm:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0.5, 0.7, 0.8, 1, 1.2 ),
+"transitions": PoolRealArray( 0.366022, 0.366022, 0.366022, 1, 1 ),
+"update": 0,
+"values": [ Vector2( 2.18195, 6.32062 ), Vector2( 2.18195, 6.32062 ), Vector2( 2.18195, 6.32062 ), Vector2( 2.18195, 6.32062 ), Vector2( 2.18195, 6.32062 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("arm:rotation_degrees")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0.5, 0.7, 0.8, 1, 1.2 ),
+"transitions": PoolRealArray( 0.31864, 0.31864, 0.31864, 1, 1 ),
+"update": 0,
+"values": [ 18.8157, 14.3219, -11.2514, -11.2514, 18.8157 ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("arm/hand:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0.5, 0.7, 0.8, 1, 1.2 ),
+"transitions": PoolRealArray( 0.34151, 0.34151, 0.34151, 1, 1 ),
+"update": 0,
+"values": [ Vector2( -83.5081, -116.028 ), Vector2( -83.5081, -116.028 ), Vector2( -83.5081, -116.028 ), Vector2( -83.5081, -116.028 ), Vector2( -83.5081, -116.028 ) ]
+}
+tracks/3/type = "value"
+tracks/3/path = NodePath("arm/hand:rotation_degrees")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0.5, 0.7, 0.8, 1, 1.2 ),
+"transitions": PoolRealArray( 0.366021, 0.366021, 0.366021, 1, 1 ),
+"update": 0,
+"values": [ -74.869, -26.2848, 19.7704, 19.7704, -74.869 ]
+}
+tracks/4/type = "value"
+tracks/4/path = NodePath(".:position")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/keys = {
+"times": PoolRealArray( 0, 0.3 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( 1289.06, 383.308 ), Vector2( 421.28, 383.308 ) ]
+}
+tracks/5/type = "method"
+tracks/5/path = NodePath("../Node2D")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/keys = {
+"times": PoolRealArray( 0.7 ),
+"transitions": PoolRealArray( 1 ),
+"values": [ {
+"args": [  ],
+"method": "topple"
+} ]
+}
+
+[node name="Node2D" type="Node2D"]
+script = ExtResource( 9 )
+
+[node name="bg" type="Sprite" parent="."]
+texture = ExtResource( 1 )
+centered = false
+
+[node name="topple" type="Sprite" parent="."]
+material = SubResource( 2 )
+position = Vector2( 1289.06, 383.308 )
+texture = ExtResource( 4 )
+centered = false
+offset = Vector2( -420, -380 )
+
+[node name="arm" type="Sprite" parent="topple"]
+position = Vector2( 2.18195, 6.32062 )
+rotation = 0.249964
+texture = ExtResource( 5 )
+centered = false
+offset = Vector2( -100, -135 )
+region_enabled = true
+region_rect = Rect2( 318.587, 256.953, 118.897, 149.913 )
+__meta__ = {
+"_edit_bone_": true,
+"_edit_ik_": true
+}
+
+[node name="hand" type="Sprite" parent="topple/arm"]
+position = Vector2( -83.5081, -116.028 )
+rotation = -0.458756
+texture = ExtResource( 3 )
+centered = false
+offset = Vector2( -130, -30 )
+region_enabled = true
+region_rect = Rect2( 197.105, 247.907, 148.621, 96.9267 )
+__meta__ = {
+"_edit_bone_": true
+}
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="topple"]
+anims/topple = SubResource( 3 )
+
+[node name="candle_sticks" type="Sprite" parent="."]
+texture = ExtResource( 2 )
+centered = false
+
+[node name="drop_zone" parent="." instance=ExtResource( 7 )]
+position = Vector2( 140.313, 405.018 )
+
+[node name="drop_zone2" parent="." instance=ExtResource( 7 )]
+position = Vector2( 217.934, 359.242 )
+correct = true
+
+[node name="drop_zone3" parent="." instance=ExtResource( 7 )]
+position = Vector2( 289.583, 400.042 )
+
+[node name="drop_zone4" parent="." instance=ExtResource( 7 )]
+position = Vector2( 456.765, 485.624 )
+
+[node name="drop_zone5" parent="." instance=ExtResource( 7 )]
+position = Vector2( 507.516, 424.921 )
+
+[node name="drop_zone6" parent="." instance=ExtResource( 7 )]
+position = Vector2( 564.239, 448.804 )
+
+[node name="drop_zone7" parent="." instance=ExtResource( 7 )]
+position = Vector2( 643.849, 230.87 )
+
+[node name="drop_zone8" parent="." instance=ExtResource( 7 )]
+position = Vector2( 685.645, 231.865 )
+
+[node name="drop_zone9" parent="." instance=ExtResource( 7 )]
+position = Vector2( 720.474, 212.958 )
+
+[node name="Node2D" parent="." instance=ExtResource( 8 )]

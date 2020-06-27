@@ -10,7 +10,7 @@
 [ext_resource path="res://assets/water (5).png" type="Texture" id=8]
 [ext_resource path="res://assets/water (3).png" type="Texture" id=9]
 [ext_resource path="res://assets/water (4).png" type="Texture" id=10]
-[ext_resource path="res://water.tres" type="Material" id=11]
+[ext_resource path="res://water_v2.tres" type="Material" id=11]
 [ext_resource path="res://narcissus.gd" type="Script" id=12]
 
 [sub_resource type="Shader" id=1]

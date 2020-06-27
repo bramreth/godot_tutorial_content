@@ -80,7 +80,7 @@ float pixel_is_solid(vec2 pos){
 
 
 vec2 collision_normal(vec2 pos){
-	float sample = 5f;
+	float sample = 1f;
 	vec2 avg = vec2(0f);
 	for(float i = -sample; i < sample; i+= 1f){
 		for(float j = -sample; j < sample; j+= 1f){
@@ -93,6 +93,13 @@ vec2 collision_normal(vec2 pos){
 		avg = normalize(avg);
 	}
 	return avg;
+}
+
+float x_collision(vec2 pos){
+	float dir = 0f;
+	dir -= pixel_is_solid(vec2(pos.x-1f, pos.y));
+	dir += pixel_is_solid(vec2(pos.x+1f, pos.y));
+	return dir;
 }
 
 void vertex() {
@@ -187,8 +194,9 @@ void vertex() {
 //		}
 //	}
 	if(pixel_is_solid(TRANSFORM[3].xy) > 0f){
-		VELOCITY.y *= -0.25f;
-		VELOCITY.x *= 0.5f;
+		VELOCITY.y = abs(VELOCITY.y) * 0.66 * -angle_rand;// * -(angle_rand-0.5);
+		VELOCITY.x *= x_collision(TRANSFORM[3].xy) * angle_rand;
+//		VELOCITY.xy *= 0.5 * collision_normal(TRANSFORM[3].xy);
 	}
 //test start
 //	float collision = pixel_is_solid(TRANSFORM[3].xy);
@@ -246,10 +254,10 @@ void vertex() {
 
 [sub_resource type="ShaderMaterial" id=2]
 shader = SubResource( 1 )
-shader_param/direction = Vector3( 1, 0, 0 )
+shader_param/direction = Vector3( -1, 0.5, 0 )
 shader_param/spread = 45.0
 shader_param/flatness = 0.0
-shader_param/initial_linear_velocity = 0.0
+shader_param/initial_linear_velocity = 100.0
 shader_param/initial_angle = 0.0
 shader_param/angular_velocity = 0.0
 shader_param/orbit_velocity = 0.0
@@ -261,8 +269,8 @@ shader_param/scale = 5.0
 shader_param/hue_variation = 0.0
 shader_param/anim_speed = 0.0
 shader_param/anim_offset = 0.0
-shader_param/initial_linear_velocity_random = 0.0
-shader_param/initial_angle_random = 0.0
+shader_param/initial_linear_velocity_random = 1.0
+shader_param/initial_angle_random = 0.25
 shader_param/angular_velocity_random = 0.0
 shader_param/orbit_velocity_random = 0.0
 shader_param/linear_accel_random = 0.0
@@ -274,7 +282,7 @@ shader_param/hue_variation_random = 0.0
 shader_param/anim_speed_random = 0.0
 shader_param/anim_offset_random = 0.0
 shader_param/lifetime_randomness = 0.0
-shader_param/emission_box_extents = Vector3( 512, 1, 1 )
+shader_param/emission_box_extents = Vector3( 600, 1, 1 )
 shader_param/color_value = Color( 0.466667, 0.811765, 1, 1 )
 shader_param/trail_divisor = 1
 shader_param/gravity = Vector3( 0, 980, 0 )
@@ -285,8 +293,8 @@ shader_param/ydim = null
 script = ExtResource( 2 )
 
 [node name="Particles2D" type="Particles2D" parent="."]
-amount = 128
-lifetime = 2.5
+amount = 1200
+lifetime = 1.5
 visibility_rect = Rect2( -100, -100, 2000, 2000 )
 local_coords = false
 process_material = SubResource( 2 )
